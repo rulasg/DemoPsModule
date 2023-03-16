@@ -8,7 +8,7 @@
                 "name": "PowerShell: TestingModule1.ps1",
                 "type": "PowerShell",
                 "request": "launch",
-                "script": "${workspaceFolder}/TestingModule1Test.ps1",
+                "script": "${workspaceFolder}/source/TestingModule1Test.ps1",
                 "cwd": "${workspaceFolder}"
             }
         ]
