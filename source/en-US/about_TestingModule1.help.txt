@@ -1,0 +1,19 @@
+PSTOPIC
+    about_TestingModule1
+
+SHORT DESCRIPTION
+    TestingModule1 will help as a sample module to learn how to set Posh modules with multiple files.
+
+LONG DESCRIPTION
+    TestingModule1 will help as a sample module to learn how to set Posh modules with multiple files.
+
+    This module scaffolding is based on TestingHelper module
+        https://www.powershellgallery.com/packages/TestingHelper
+
+DETAILED DESCRIPTION
+    This Module is a testing module to learn how to set Posh modules with multiple files.
+
+    This best practices is following Warrne F blog:
+         http://ramblingcookiemonster.github.io/Building-A-PowerShell-Module/
+
+    
