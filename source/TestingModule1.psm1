@@ -1,13 +1,13 @@
-<# 
-.Synopsis 
+<#
+.Synopsis
 TestingModule1
 
 .Description
 Sample of module to learn
 
-.Notes 
+.Notes
 NAME  : TestingModule1.psm1*
-AUTHOR: rulasg   
+AUTHOR: rulasg
 
 CREATED: 16/3/2023
 #>
