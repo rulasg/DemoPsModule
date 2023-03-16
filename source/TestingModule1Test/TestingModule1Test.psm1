@@ -12,7 +12,7 @@ AUTHOR: rulasg
 CREATED: 16/3/2023
 #>
 
-Write-Host "Loading TestingModule1Test ..." -ForegroundColor DarkCyan
+Write-Information "Loading TestingModule1Test ..."
 
 $MODULE_PATH = (Get-Module TestingModule1).Path
 
