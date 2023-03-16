@@ -1,13 +1,13 @@
-<# 
-.Synopsis 
+<#
+.Synopsis
 TestingModule1Test
 
 .Description
 Testing module for TestingModule1
 
-.Notes 
+.Notes
 NAME  : TestingModule1Test.psm1*
-AUTHOR: rulasg   
+AUTHOR: rulasg
 
 CREATED: 16/3/2023
 #>
@@ -32,14 +32,14 @@ function TestingModule1Test_GetPrivateFunction(){
 }
 
 function TestingModule1Test_GetPublicFunction(){
-    
+
     $result = Get-PublicFunction -Text "Testing"
 
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Testing") -Presented $result
 }
 
 function TestingModule1Test_GetPublicFunctionWithPrivateCall(){
-    
+
     $result = Get-PublicFunctinWithPrivateCall -Text "Testing"
 
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Private function [Testing]") -Presented $result
