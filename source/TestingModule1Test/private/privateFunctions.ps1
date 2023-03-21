@@ -1,5 +1,4 @@
 
-
 function script:Get-PrivateFunction{
     [CmdletBinding()]
     param (
@@ -7,6 +6,6 @@ function script:Get-PrivateFunction{
         [string]$Text
     )
 
-    "Private function [{0}]" -f $Text | Write-Output
-    "Private function [{0}] - Verbose" -f $Text | Write-Verbose
+    "Injected Private function [{0}]" -f $Text | Write-Output
+    "Injected Private function [{0}] - Verbose" -f $Text | Write-Verbose
 }
