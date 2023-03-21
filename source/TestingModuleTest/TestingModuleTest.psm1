@@ -1,20 +1,20 @@
 <#
 .Synopsis
-TestingModule1Test
+TestingModuleTest
 
 .Description
-Testing module for TestingModule1
+Testing module for TestingModule
 
 .Notes
-NAME  : TestingModule1Test.psm1*
+NAME  : TestingModuleTest.psm1*
 AUTHOR: rulasg
 
 CREATED: 16/3/2023
 #>
 
-Write-Information "Loading TestingModule1Test ..."
+Write-Information "Loading TestingModuleTest ..."
 
-$MODULE_NAME = 'TestingModule1'
+$MODULE_NAME = 'TestingModule'
 $MODULE_PATH = ($MODULE_NAME | Get-Module ).Path
 
 
@@ -22,7 +22,7 @@ $MODULE_PATH = ($MODULE_NAME | Get-Module ).Path
 
 function ImportTestingPrivateFunctions{
 
-    $module = Get-Module -Name TestingModule1
+    $module = Get-Module -Name TestingModule
 
     & $module {
         $path = Join-Path -Path $PSScriptRoot -ChildPath "Private"
@@ -41,14 +41,14 @@ function ImportTestingPrivateFunctions{
     }
 } Export-ModuleMember -Function Import-PrivateFunctions
 
-function TestingModule1Test_Sample(){
+function TestingModuleTest_Sample(){
     Assert-IsTrue -Condition $true
 }
 
-function TestingModule1Test_GetPrivateFunction(){
+function TestingModuleTest_GetPrivateFunction(){
 
     # $module = Import-Module -Name $MODULE_PATH -PassThru -Force
-    $module = Get-Module -Name TestingModule1
+    $module = Get-Module -Name TestingModule
 
     & $module {
 
@@ -57,21 +57,21 @@ function TestingModule1Test_GetPrivateFunction(){
     }
 }
 
-function TestingModule1Test_GetPublicFunction(){
+function TestingModuleTest_GetPublicFunction(){
 
     $result = Get-PublicFunction -Text "Testing"
 
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Testing") -Presented $result
 }
 
-function TestingModule1Test_GetPublicFunctionWithPrivateCall(){
+function TestingModuleTest_GetPublicFunctionWithPrivateCall(){
 
     $result = Get-PublicFunctinWithPrivateCall -Text "Testing"
 
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Private function [Testing]") -Presented $result
 }
 
-function TestingModule1Test_GetPublicFunctionWithPrivateCall_Injected(){
+function TestingModuleTest_GetPublicFunctionWithPrivateCall_Injected(){
 
     $result_Pub1 = Get-PublicFunctinWithPrivateCall -Text "Testing"
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Private function [Testing]") -Presented $result_Pub1
@@ -83,7 +83,7 @@ function TestingModule1Test_GetPublicFunctionWithPrivateCall_Injected(){
 }
 
 
-# function TestingModule1Test_GetPublicFunctionWithPrivateCall_Injected(){
+# function TestingModuleTest_GetPublicFunctionWithPrivateCall_Injected(){
 
 #     # Init module and change variable
 #     Import-Module -Name $MODULE_PATH -Force
@@ -102,13 +102,13 @@ function TestingModule1Test_GetPublicFunctionWithPrivateCall_Injected(){
 
 #     $module = Get-Module -Name $MODULE_PATH -Force
 
-#     $module1 = Get-Module -Name TestingModule1 -PassThru
+#     $module1 = Get-Module -Name TestingModule -PassThru
 # }
-# function TestingModule1Test_GetPublicFunctionWithPrivateCall_Injected(){
+# function TestingModuleTest_GetPublicFunctionWithPrivateCall_Injected(){
 
 #     # This functions proves that even if I update the functios onthe module they are not really updated
 #     # Seems as if you are copying the module when you Get-Module making a copy
-#     $module1 = Get-Module -Name TestingModule1 -PassThru
+#     $module1 = Get-Module -Name TestingModule -PassThru
 
 #     $PSScriptRoot_OUT = $PSScriptRoot
     
@@ -145,7 +145,7 @@ function TestingModule1Test_GetPublicFunctionWithPrivateCall_Injected(){
 
 #     $result_OUT_Pub2 = Get-PublicFunctinWithPrivateCall -Text "Testing"
     
-#     $module2 = Get-Module -Name TestingModule1 -PassThru
+#     $module2 = Get-Module -Name TestingModule -PassThru
 #     & $module2 {
 #         $giIN2 = Get-GuidInstance
 #         $result_IN_Priv2 = Get-PrivateFunction -Text "Testing"
@@ -155,4 +155,4 @@ function TestingModule1Test_GetPublicFunctionWithPrivateCall_Injected(){
 #     Assert-AreEqual -Expected ("Public function [{0}]" -f "Injected Private function [Testing]") -Presented $result
 # }
 
-Export-ModuleMember -Function TestingModule1Test_*
+Export-ModuleMember -Function TestingModuleTest_*

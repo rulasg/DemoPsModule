@@ -1,18 +1,18 @@
 <#
 .Synopsis
-TestingModule1
+TestingModule
 
 .Description
 Sample of module to learn
 
 .Notes
-NAME  : TestingModule1.psm1*
+NAME  : TestingModule.psm1*
 AUTHOR: rulasg
 
 CREATED: 16/3/2023
 #>
 
-Write-Host "Loading TestingModule1 ..." -ForegroundColor DarkCyan
+Write-Host "Loading TestingModule ..." -ForegroundColor DarkCyan
 
 $script:GuidInstance = 0
 
