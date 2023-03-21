@@ -16,14 +16,6 @@ Write-Host "Loading TestingModule ..." -ForegroundColor DarkCyan
 
 $script:GuidInstance = 0
 
-function Get-GuidInstance(){
-    return $script:GuidInstance
-} Export-ModuleMember -Function Get-GuidInstance
-function Update-GuidInstance([int] $value ){
-    $script:GuidInstance = $value
-} Export-ModuleMember -Function Update-GuidInstance
-
-
 #Get public and private function definition files.
 $Public  = @( Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction SilentlyContinue )
 $Private = @( Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -ErrorAction SilentlyContinue )
