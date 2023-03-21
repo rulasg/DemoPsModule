@@ -12,7 +12,7 @@ AUTHOR: rulasg
 CREATED: 16/3/2023
 #>
 
-Write-Host "Loading TestingModule ..." -ForegroundColor DarkCyan
+Write-Information "Loading TestingModule ..."
 
 $script:GuidInstance = 0
 

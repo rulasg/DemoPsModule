@@ -71,9 +71,9 @@ function TestingModuleTest_GetPublicFunctionWithPrivateCall_Injected(){
 
     $result_Pub1 = Get-PublicFunctinWithPrivateCall -Text "Testing"
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Private function [Testing]") -Presented $result_Pub1
-    
+
     ImportTestingPrivateFunctions
-    
+
     $result_Pub2 = Get-PublicFunctinWithPrivateCall -Text "Testing"
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Injected Private function [Testing]") -Presented $result_Pub2
 }
