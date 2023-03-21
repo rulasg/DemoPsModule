@@ -1,28 +1,20 @@
 <#
 .Synopsis
-TestingModule1
+TestingModule
 
 .Description
 Sample of module to learn
 
 .Notes
-NAME  : TestingModule1.psm1*
+NAME  : TestingModule.psm1*
 AUTHOR: rulasg
 
 CREATED: 16/3/2023
 #>
 
-Write-Host "Loading TestingModule1 ..." -ForegroundColor DarkCyan
+Write-Information "Loading TestingModule ..."
 
 $script:GuidInstance = 0
-
-function Get-GuidInstance(){
-    return $script:GuidInstance
-} Export-ModuleMember -Function Get-GuidInstance
-function Update-GuidInstance([int] $value ){
-    $script:GuidInstance = $value
-} Export-ModuleMember -Function Update-GuidInstance
-
 
 #Get public and private function definition files.
 $Public  = @( Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction SilentlyContinue )
