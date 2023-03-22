@@ -22,12 +22,12 @@ param(
 # If it is use environment variable $env:NugetApiKey
 if ( [string]::IsNullOrWhiteSpace($NuGetApiKey) ) {
     
-    if ( [string]::IsNullOrWhiteSpace($env:NuGetApiKey) ) {
+    if ( [string]::IsNullOrWhiteSpace($env:NUGETAPIKEY) ) {
         Write-Error -Message 'NuGetApiKey is not set. Try running `$Env:NuGetApiKey = fdf nuget | Get-SecretValue`'
         return
     }
     
-    $NuGetApiKey = $env:NuGetApiKey
+    $NuGetApiKey = $env:NUGETAPIKEY
 }
 
 # look for psd1 file on the same folder as this script

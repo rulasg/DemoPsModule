@@ -21,7 +21,7 @@ function ImportTestingPrivateFunctions{
     $module = Get-Module -Name PsModuleLearning
 
     & $module {
-        $path = Join-Path -Path $PSScriptRoot -ChildPath "Private"
+        $path = Join-Path -Path $PSScriptRoot -ChildPath "private"
         $Private = @( Get-ChildItem -Path $path -ErrorAction SilentlyContinue )
         Foreach($import in $Private)
         {
