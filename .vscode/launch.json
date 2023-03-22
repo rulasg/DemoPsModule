@@ -5,7 +5,7 @@
         "version": "0.2.0",
         "configurations": [
             {
-                "name": "PowerShell: TestingModule.ps1",
+                "name": "PowerShell: PsModuleLearning.ps1",
                 "type": "PowerShell",
                 "request": "launch",
                 "script": "${workspaceFolder}/source/Test.ps1",
