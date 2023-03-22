@@ -1,18 +1,18 @@
 <#
 .Synopsis
-TestingModule
+PsModuleLearning
 
 .Description
 Sample of module to learn
 
 .Notes
-NAME  : TestingModule.psm1*
+NAME  : PsModuleLearning.psm1*
 AUTHOR: rulasg
 
 CREATED: 16/3/2023
 #>
 
-Write-Information "Loading TestingModule ..."
+Write-Information "Loading PsModuleLearning ..."
 
 $script:GuidInstance = 0
 
