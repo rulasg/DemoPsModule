@@ -1,2 +1,3 @@
 # PsModuleLearning
-Learn and exercise best practices to crete a Posh module
+
+Learn and exercise best practices to create a Powershell module.
