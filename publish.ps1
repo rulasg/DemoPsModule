@@ -48,7 +48,7 @@ if ( $psd.Count -gt 1 ) {
 Import-PowerShellDataFile -Path $psd
 
 if (-not $Force) {
-    
+
     Write-Host
     Write-Host -Message 'Publishing to PSGallery. Press any key to continue...' -ForegroundColor Yellow
     Read-Host
