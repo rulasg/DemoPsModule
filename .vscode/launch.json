@@ -8,7 +8,7 @@
                 "name": "PowerShell: PsModuleLearning.ps1",
                 "type": "PowerShell",
                 "request": "launch",
-                "script": "${workspaceFolder}/source/Test.ps1",
+                "script": "${workspaceFolder}/test.ps1",
                 "cwd": "${workspaceFolder}"
             },
             {

@@ -12,7 +12,7 @@
 RootModule = 'PsModuleLearning.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0'
+ModuleVersion = '1.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -24,13 +24,13 @@ GUID = 'dafa69cd-e067-4ec6-a31b-e87e0b152a5f'
 Author = 'rulasg'
 
 # Company or vendor of this module
-CompanyName = 'Unknown'
+CompanyName = 'BiT21'
 
 # Copyright statement for this module
 Copyright = '(c) rulasg. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Sample of module to learn'
+Description = 'Learn and exercise best practices to create a Powershell module.'
 
 # Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = ''
