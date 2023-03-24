@@ -4,17 +4,28 @@
 .DESCRIPTION
     This script will publish the module to the PSGallery
 .NOTES
-    Information or caveats about the function e.g. 'This function is not supported in Linux'
-.LINK
-    Specify a URI to a help page, this will show when Get-Help -Online is used.
+    You will need to create a NuGet API Key for the PSGallery at https://www.powershellgallery.com/account/apikeys
+# .LINK
+    # Specify a URI to a help page, this will show when Get-Help -Online is used.
 .EXAMPLE
-    # Set the Environment variable $NugetApiKey to the API Key for the PSGallery
-    Publish.ps1
+    # Publish the module to the PSGallery without prompting
+
+    > Publish.ps1 -Force -NuGetApiKey "<API Key>""
+.EXAMPLE
+    # Publish the module to the PSGallery using PAT on enviroment variable
+
+    > $env:NUGETAPIKEY = <API Key>
+    > Publish.ps1
 #>
 
-[CmdletBinding(SupportsShouldProcess)]
+[CmdletBinding(
+    SupportsShouldProcess,
+    ConfirmImpact='High'
+    )]
 param(
+    # The NuGet API Key for the PSGallery
     [Parameter(Mandatory=$false)] [string]$NuGetApiKey,
+    # Force the publish without prompting for confirmation
     [Parameter(Mandatory=$false)] [switch]$Force
 )
 
@@ -23,7 +34,7 @@ param(
 if ( [string]::IsNullOrWhiteSpace($NuGetApiKey) ) {
     
     if ( [string]::IsNullOrWhiteSpace($env:NUGETAPIKEY) ) {
-        Write-Error -Message 'NuGetApiKey is not set. Try running `$Env:NuGetApiKey = fdf nuget | Get-SecretValue`'
+        Write-Error -Message '$Env:NUGETAPIKEY is not set. Try running `$Env:NUGETAPIKEY = fdf nuget | Get-SecretValue`'
         return
     }
     
@@ -45,13 +56,13 @@ if ( $psd.Count -gt 1 ) {
     return
 }
 
-Import-PowerShellDataFile -Path $psd
+$psd1 = Import-PowerShellDataFile -Path $psd
+$psd1
+$psd1.PrivateData.PSData
 
-if (-not $Force) {
 
-    Write-Host
-    Write-Host -Message 'Publishing to PSGallery. Press any key to continue...' -ForegroundColor Yellow
-    Read-Host
+if ($Force -and -not $Confirm){
+    $ConfirmPreference = 'None'
 }
 
 if ($PSCmdlet.ShouldProcess($psd, "Publish-Module")) {

@@ -12,7 +12,7 @@ AUTHOR: rulasg
 CREATED: 16/3/2023
 #>
 
-Write-Information "Loading PsModuleLearning ..."
+Write-Information -Message ("Loading {0} ..." -f ($PSCommandPath | Split-Path -LeafBase)) -InformationAction continue
 
 $script:GuidInstance = 0
 
