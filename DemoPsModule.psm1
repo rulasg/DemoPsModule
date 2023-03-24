@@ -1,12 +1,12 @@
 <#
 .Synopsis
-PsModuleLearning
+DemoPsModule
 
 .Description
 Sample of module to learn
 
 .Notes
-NAME  : PsModuleLearning.psm1*
+NAME  : DemoPsModule.psm1*
 AUTHOR: rulasg
 
 CREATED: 16/3/2023

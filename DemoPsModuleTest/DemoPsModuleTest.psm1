@@ -1,24 +1,24 @@
 <#
 .Synopsis
-PsModuleLearningTest
+DemoPsModuleTest
 
 .Description
-Testing module for PsModuleLearning
+Testing module for DemoPsModule
 
 .Notes
-NAME  : PsModuleLearningTest.psm1*
+NAME  : DemoPsModuleTest.psm1*
 AUTHOR: rulasg
 
 CREATED: 16/3/2023
 #>
 
-Write-Information "Loading PsModuleLearningTest ..."
+Write-Information "Loading DemoPsModuleTest ..."
 
 # function for dependency injection
 
 function ImportTestingPrivateFunctions{
 
-    $module = Get-Module -Name PsModuleLearning
+    $module = Get-Module -Name DemoPsModule
 
     & $module {
         $path = Join-Path -Path $PSScriptRoot -ChildPath "private"
@@ -37,14 +37,14 @@ function ImportTestingPrivateFunctions{
     }
 } Export-ModuleMember -Function Import-PrivateFunctions
 
-function PsModuleLearningTest_Sample(){
+function DemoPsModuleTest_Sample(){
     Assert-IsTrue -Condition $true
 }
 
-function PsModuleLearningTest_GetPrivateFunction(){
+function DemoPsModuleTest_GetPrivateFunction(){
 
     # $module = Import-Module -Name $MODULE_PATH -PassThru -Force
-    $module = Get-Module -Name PsModuleLearning
+    $module = Get-Module -Name DemoPsModule
 
     & $module {
 
@@ -53,21 +53,21 @@ function PsModuleLearningTest_GetPrivateFunction(){
     }
 }
 
-function PsModuleLearningTest_GetPublicFunction(){
+function DemoPsModuleTest_GetPublicFunction(){
 
     $result = Get-PublicFunction -Text "Testing"
 
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Testing") -Presented $result
 }
 
-function PsModuleLearningTest_GetPublicFunctionWithPrivateCall(){
+function DemoPsModuleTest_GetPublicFunctionWithPrivateCall(){
 
     $result = Get-PublicFunctinWithPrivateCall -Text "Testing"
 
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Private function [Testing]") -Presented $result
 }
 
-function PsModuleLearningTest_GetPublicFunctionWithPrivateCall_Injected(){
+function DemoPsModuleTest_GetPublicFunctionWithPrivateCall_Injected(){
 
     $result_Pub1 = Get-PublicFunctinWithPrivateCall -Text "Testing"
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Private function [Testing]") -Presented $result_Pub1
@@ -78,4 +78,4 @@ function PsModuleLearningTest_GetPublicFunctionWithPrivateCall_Injected(){
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Injected Private function [Testing]") -Presented $result_Pub2
 }
 
-Export-ModuleMember -Function PsModuleLearningTest_*
+Export-ModuleMember -Function DemoPsModuleTest_*
