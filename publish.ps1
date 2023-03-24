@@ -42,29 +42,36 @@ if ( [string]::IsNullOrWhiteSpace($NuGetApiKey) ) {
 }
 
 # look for psd1 file on the same folder as this script
-$psd = Get-ChildItem -Path $PSScriptRoot -Filter *.psd1
+$psdPath = Get-ChildItem -Path $PSScriptRoot -Filter *.psd1
 
 # check if $psd is set
-if ( $null -eq $psd ) {
+if ( $null -eq $psdPath ) {
     Write-Error -Message 'No psd1 file found'
     return
 }
 
 # check if $psd is a single file
-if ( $psd.Count -gt 1 ) {
+if ( $psdPath.Count -gt 1 ) {
     Write-Error -Message 'More than one psd1 file found'
     return
 }
 
-$psd1 = Import-PowerShellDataFile -Path $psd
+# Display Module Information
+$psd1 = Import-PowerShellDataFile -Path $psdPath
 $psd1
 $psd1.PrivateData.PSData
 
 
+# Confirm if not forced
 if ($Force -and -not $Confirm){
     $ConfirmPreference = 'None'
 }
 
+# Publish the module with ShouldProcess (-whatif, -confirm)
 if ($PSCmdlet.ShouldProcess($psd, "Publish-Module")) {
+    $message ="Publishing {0} {1} {2} to PSGallery ..." -f $($psdPath.Name), $($psd1.ModuleVersion), $($psd1.PrivateData.pSData.Prerelease)  
+    # show an empty line
+    Write-Information -InformationAction Continue -Message ""
+    Write-Information -InformationAction Continue -Message $message 
     publish-Module   -Name $psd -NuGetApiKey $NuGetApiKey
 }
