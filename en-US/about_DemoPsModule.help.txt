@@ -1,11 +1,11 @@
 PSTOPIC
-    about_PsModuleLearning
+    about_DemoPsModule
 
 SHORT DESCRIPTION
-    PsModuleLearning will help as a sample module to learn how to set Posh modules with multiple files.
+    DemoPsModule will help as a sample module to learn how to set Posh modules with multiple files.
 
 LONG DESCRIPTION
-    PsModuleLearning will help as a sample module to learn how to set Posh modules with multiple files.
+    DemoPsModule will help as a sample module to learn how to set Posh modules with multiple files.
 
     This module scaffolding is based on TestingHelper module
         https://www.powershellgallery.com/packages/TestingHelper
