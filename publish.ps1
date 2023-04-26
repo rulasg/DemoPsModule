@@ -35,6 +35,7 @@ if ( [string]::IsNullOrWhiteSpace($NuGetApiKey) ) {
     
     if ( [string]::IsNullOrWhiteSpace($env:NUGETAPIKEY) ) {
         Write-Error -Message '$Env:NUGETAPIKEY is not set. Try running `$Env:NUGETAPIKEY = fdf nuget | Get-SecretValue`'
+        Write-Error -Message '$Env:NUGETAPIKEY is not set. Try running `$Env:NUGETAPIKEY = (Find-DocsFile nugetapikey | rsk | Get-SecretData).Get()`'
         return
     }
     
@@ -68,10 +69,10 @@ if ($Force -and -not $Confirm){
 }
 
 # Publish the module with ShouldProcess (-whatif, -confirm)
-if ($PSCmdlet.ShouldProcess($psd, "Publish-Module")) {
+if ($PSCmdlet.ShouldProcess($psdPath, "Publish-Module")) {
     $message ="Publishing {0} {1} {2} to PSGallery ..." -f $($psdPath.Name), $($psd1.ModuleVersion), $($psd1.PrivateData.pSData.Prerelease)  
     # show an empty line
     Write-Information -InformationAction Continue -Message ""
     Write-Information -InformationAction Continue -Message $message 
-    publish-Module   -Name $psd -NuGetApiKey $NuGetApiKey
+    publish-Module   -Name $psdPath -NuGetApiKey $NuGetApiKey
 }
