@@ -5,8 +5,8 @@
     This script will publish the module to the PSGallery
 .NOTES
     You will need to create a NuGet API Key for the PSGallery at https://www.powershellgallery.com/account/apikeys
-# .LINK
-    # Specify a URI to a help page, this will show when Get-Help -Online is used.
+.LINK
+    https://raw.githubusercontent.com/rulasg/DemoPsModule/main/publish.ps1
 .EXAMPLE
     # Publish the module to the PSGallery without prompting
 
@@ -15,7 +15,7 @@
     # Publish the module to the PSGallery using PAT on enviroment variable
 
     > $env:NUGETAPIKEY = <API Key>
-    > Publish.ps1
+    > ./publish.ps1
 #>
 
 [CmdletBinding(
