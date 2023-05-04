@@ -28,24 +28,10 @@ function Import-TestingHelper{
     }
 }
 
-# Import-TestingHelper -Version "2.1.1-alpha"
-uninstall-Module -name TestingHelper -AllVersions ; rmo testinghelper*
-Import-TestingHelper -AllowPrerelease # 2.1.1-alpha
-
-Import-TestingHelper -Version 2.5 # 2.5
-
-uninstall-Module -name TestingHelper -AllVersions ; rmo testinghelper*   
-Import-TestingHelper -Version 1.3 # 1.3
-
-uninstall-Module -name TestingHelper -AllVersions ; rmo testinghelper*   
-Import-TestingHelper  # 2.0
-
-uninstall-Module -name TestingHelper -AllVersions ; rmo testinghelper*   
-Import-TestingHelper -Version "2.1.1-alpha" # 2.1.1-alpha
-Import-TestingHelper  # 2.1.1-alpha
+Import-TestingHelper -version 2.1.1-alpha #first version wiht Test-ModulelocalPsd1
 
 # Run test by PSD1 file
-# Test-ModulelocalPSD1
+Test-ModulelocalPSD1
 
 # Run tests by module name
 # We need to manage the import of the version we want to test
