@@ -1,3 +1,17 @@
+<#
+.SYNOPSIS
+    Run tests
+.DESCRIPTION
+    Run the unit test of the actual module
+.NOTES
+    Using TestingHelper this script will search for a Test module and run the tests
+    This script will be referenced from launch.json to run the tests on VSCode
+.LINK
+    https://raw.githubusercontent.com/rulasg/DemoPsModule/main/test.ps1
+.EXAMPLE
+    > ./test.ps1
+#>
+
 [CmdletBinding()]
 param ()
 
