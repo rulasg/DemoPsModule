@@ -26,7 +26,9 @@ param(
     # The NuGet API Key for the PSGallery
     [Parameter(Mandatory=$false)] [string]$NuGetApiKey,
     # Force the publish without prompting for confirmation
-    [Parameter(Mandatory=$false)] [switch]$Force
+    [Parameter(Mandatory=$false)] [switch]$Force,
+    # Force publishing package to the gallery. Equivalente to Import-Module -Force
+    [Parameter(Mandatory=$false)] [switch]$ForcePublish
 )
 
 # check that $NuggetApiKey is null or whitespace
@@ -34,7 +36,6 @@ param(
 if ( [string]::IsNullOrWhiteSpace($NuGetApiKey) ) {
     
     if ( [string]::IsNullOrWhiteSpace($env:NUGETAPIKEY) ) {
-        Write-Error -Message '$Env:NUGETAPIKEY is not set. Try running `$Env:NUGETAPIKEY = fdf nuget | Get-SecretValue`'
         Write-Error -Message '$Env:NUGETAPIKEY is not set. Try running `$Env:NUGETAPIKEY = (Find-DocsFile nugetapikey | rsk | Get-SecretData).Get()`'
         return
     }
@@ -74,5 +75,5 @@ if ($PSCmdlet.ShouldProcess($psdPath, "Publish-Module")) {
     # show an empty line
     Write-Information -InformationAction Continue -Message ""
     Write-Information -InformationAction Continue -Message $message 
-    publish-Module   -Name $psdPath -NuGetApiKey $NuGetApiKey
+    Publish-Module   -Name $psdPath -NuGetApiKey $NuGetApiKey -Force:$ForcePublish
 }
