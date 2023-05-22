@@ -13,7 +13,9 @@
 #>
 
 [CmdletBinding()]
-param ()
+param (
+    [Parameter()][switch]$ShowTestErrors
+)
 
 function Import-TestingHelper{
     [CmdletBinding()]
@@ -42,14 +44,7 @@ function Import-TestingHelper{
     }
 }
 
-Import-TestingHelper -version 2.1.1-alpha #first version wiht Test-ModulelocalPsd1
+Import-TestingHelper -AllowPrerelease
 
 # Run test by PSD1 file
-Test-ModulelocalPSD1
-
-# Run tests by module name
-# We need to manage the import of the version we want to test
-# If there are different versions of the module installed, we need to import the one we want to test
-# $psd = get-childitem -Path $PSScriptRoot -Filter *.psd1
-# Import-Module -Name $psd.FullName -Force
-# Test-Module -Name $psd.BaseName
+Test-ModulelocalPSD1 -ShowTestErrors:$ShowTestErrors
