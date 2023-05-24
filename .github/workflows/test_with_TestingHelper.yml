@@ -27,8 +27,11 @@ jobs:
         run: | 
           $result = ./test.ps1 -ShowTestErrors
           $result
-          if($result.Tests -ne $result.Pass){
-            throw "Not all tests Pass"
+          if($result.Tests -eq $result.Pass){
+            "All test passed" | Write-Verbose -verbose
+          } else {
+            "Some test failed" | Write-Verbose -verbose
+            exit 1
           }
         shell: pwsh
 
