@@ -27,8 +27,8 @@ jobs:
         run: | 
           $result = ./test.ps1 -ShowTestErrors
           $result
-          if($result.Fail -ne 0){
-            throw "{0} test failed" -f $result.Fail
+          if($result.Tests -ne $result.Pass){
+            throw "Not all tests Pass"
           }
         shell: pwsh
 
