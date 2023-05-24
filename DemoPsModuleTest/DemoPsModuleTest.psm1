@@ -14,27 +14,20 @@ CREATED: 16/3/2023
 
 Write-Information "Loading DemoPsModuleTest ..."
 
-# function for dependency injection
-# Import testing module private 
+#Get public and private function definition files.
+$Public  = @( Get-ChildItem -Path $PSScriptRoot\public\*.ps1 -ErrorAction SilentlyContinue )
+$Private = @( Get-ChildItem -Path $PSScriptRoot\private\*.ps1 -ErrorAction SilentlyContinue )
 
-function Import-TestingPrivateFunctionsForInjection{
-
-    $module = Get-Module -Name DemoPsModule
-
-    & $module {
-        $path = Join-Path -Path $PSScriptRoot -ChildPath "FunctionsForDependencyInjection"
-        $Private = @( Get-ChildItem -Path $path -ErrorAction SilentlyContinue )
-        Foreach($import in $Private)
-        {
-            Try
-            {
-                . $import.fullname
-            }
-            Catch
-            {
-                Write-Error -Message "Failed to import function $($import.fullname): $_"
-            }
-        }
+#Dot source the files
+Foreach($import in @($Public + $Private))
+{
+    Try
+    {
+        . $import.fullname
+    }
+    Catch
+    {
+        Write-Error -Message "Failed to import function $($import.fullname): $_"
     }
 }
 
@@ -67,15 +60,4 @@ function DemoPsModuleTest_GetPublicFunctionWithPrivateCall(){
 
     Assert-AreEqual -Expected ("Public function [{0}]" -f "Private function [Testing]") -Presented $result
 } Export-ModuleMember -Function DemoPsModuleTest_GetPublicFunctionWithPrivateCall
-
-function DemoPsModuleTest_GetPublicFunctionWithPrivateCall_Injected(){
-
-    $result_Pub1 = Get-PublicFunctinWithPrivateCall -Text "Testing"
-    Assert-AreEqual -Expected ("Public function [{0}]" -f "Private function [Testing]") -Presented $result_Pub1
-
-    Import-TestingPrivateFunctionsForInjection
-
-    $result_Pub2 = Get-PublicFunctinWithPrivateCall -Text "Testing"
-    Assert-AreEqual -Expected ("Public function [{0}]" -f "Injected Private function [Testing]") -Presented $result_Pub2
-} Export-ModuleMember -Function DemoPsModuleTest_GetPublicFunctionWithPrivateCall_Injected
 
