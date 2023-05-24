@@ -16,4 +16,32 @@ DETAILED DESCRIPTION
     This best practices is following Warrne F blog:
          http://ramblingcookiemonster.github.io/Building-A-PowerShell-Module/
 
+    Module folder structure
+    /ModuleName/
+        Manifest    - DemoPsModule.psd1
+
+        Module      - public
+                    - publicFunctions.ps1
+                    - private
+                    - privateFunctions.ps1
+                    - privateFunctions2.ps1
+                    - DemoPsModule.psm1
+
+        Testing     - DemoPsModuleTest
+                    - private
+                        - DemoPsModuleTest.psd1
+                        - DemoPsModuleTest.psm1
+                    - test.ps1
+                    - .vscode
+                    - launch.json
+
+        Publish     - publish.ps1
+
+        About       - en-US
+                    - about_DemoPsModule.help.txt
+
+        License     - LICENSE
+        ReadMe      - README.md
+
+
     
