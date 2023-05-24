@@ -10,7 +10,7 @@ function Get-PublicFunction{
 
     "Public function [{0}]" -f $Text | Write-Output
     "Public function [{0}] - Verbose" -f $Text | Write-Verbose
-}
+} Export-ModuleMember -Function Get-PublicFunction
 
 function Get-PublicFunctinWithPrivateCall{
     [CmdletBinding()]
@@ -23,4 +23,4 @@ function Get-PublicFunctinWithPrivateCall{
 
     "Public function [{0}]" -f $private | Write-Output
 
-}
+} Export-ModuleMember -Function Get-PublicFunctinWithPrivateCall
