@@ -16,6 +16,6 @@ jobs:
           echo $EVENT_CONTEXT
       - name: Tag name display
         run: |
-          echo github.event.ref
+          echo Tag Name is : ${{github.event.ref}}
 
         
