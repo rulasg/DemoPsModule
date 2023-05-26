@@ -15,6 +15,7 @@ jobs:
       - name: Check commig
         shell: pwsh
         run: | 
+          git show -s
           $commit = (git show -s).Substring(7,40) 
           $tagref= ${{github.event.head_commit.id}}
           "Actual commit [{0}] " -f $commit | Write-Host
