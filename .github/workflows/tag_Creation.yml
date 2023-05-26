@@ -16,6 +16,7 @@ jobs:
         shell: pwsh
         run: | 
           $gitShow = git show -s
+          $gitshow  | Write-Host
           $commit = $gitshow.Substring(7,40) 
           $tagref= ${{github.event.head_commit.id}}
           "Actual commit [{0}] " -f $commit | Write-Host
