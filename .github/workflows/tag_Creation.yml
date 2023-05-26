@@ -10,12 +10,45 @@ jobs:
   print_context:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
+      - name: Check commig
+        shell: pwsh
+        run: | 
+          $commit = (git show -s).Substring(7,40) 
+          "Actual commit [{0}] " -f $commit | Write-Host
+          "ref    commit [{0}] " -f ${{github.event.head_commit.id}} | write-host
+          $equal = ($commit -eq ${{github.event.head_commit.id}})
+          "Confirmed head commit [{0}]" -f $equal | Write-Host
+
+      - name: Update Module Version
+        shell: pwsh
+        run: |
+
+          $ref = ${{github.event.ref}}
+          $tag = $ref.Split('/')[2]
+          $version = $tag.split('-')[0]'
+          $preRelease = $tag.split('-')[1]'
+
+          $manifestPath = Get-ChildItem -Path $PSScriptRoot -Filter *.psd1
+
+          update-ModuleManifest -ModuleVersion $version -Path $manifestPath.FullName -Prerelease $preRelease   
+
+          $manifestModified = Import-powerShellDataFile -Path $manifestPath.FullName
+
+          $manifestModified
+          $manifestModified.PrivateData.PSData
+
+      
+
+
+
+
+
+
       - env:
           EVENT_CONTEXT: ${{ toJSON(github.event) }}
         run: |
           echo $EVENT_CONTEXT
-      - name: Tag name display
-        run: |
-          echo Tag Name is : ${{github.event.ref}}
 
         
