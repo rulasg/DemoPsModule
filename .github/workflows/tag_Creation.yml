@@ -16,9 +16,10 @@ jobs:
         shell: pwsh
         run: | 
           $commit = (git show -s).Substring(7,40) 
+          $tagref= ${{github.event.head_commit.id}}
           "Actual commit [{0}] " -f $commit | Write-Host
-          "ref    commit [{0}] " -f ${{github.event.head_commit.id}} | write-host
-          $equal = ($commit -eq ${{github.event.head_commit.id}})
+          "ref    commit [{0}] " -f $tagref | write-host
+          $equal = ($commit -eq $tagref)
           "Confirmed head commit [{0}]" -f $equal | Write-Host
 
       - name: Update Module Version
