@@ -14,3 +14,8 @@ jobs:
           EVENT_CONTEXT: ${{ toJSON(github.event) }}
         run: |
           echo $EVENT_CONTEXT
+      - name: Tag name display
+        run: |
+          echo github.event.ref
+
+        
