@@ -17,7 +17,7 @@ jobs:
         run: | 
           $gitShow = git show -s
           $gitshow  | Write-Host
-          $commit = $gitshow.Substring(7,40) 
+          $commit = $gitshow[0].Substring(7,40) 
           $tagref= ${{github.event.head_commit.id}}
           "Actual commit [{0}] " -f $commit | Write-Host
           "ref    commit [{0}] " -f $tagref | write-host
