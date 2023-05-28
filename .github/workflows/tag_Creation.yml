@@ -12,6 +12,7 @@ permissions:
 jobs:
   print_context:
     runs-on: ubuntu-latest
+    environment: Production
     steps:
       - uses: actions/checkout@v3
 
@@ -24,6 +25,7 @@ jobs:
         shell: pwsh
         run: | 
           $ref = "${{github.event.ref}}"
+          $env:NUGETAPIKEY = ${{secrets.NUGETAPIKEY}}
           ./deploy.ps1 -ref $ref
 
      
