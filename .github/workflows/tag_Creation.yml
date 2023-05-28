@@ -6,6 +6,9 @@ on:
         - 'v*'
     workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   print_context:
     runs-on: ubuntu-latest
@@ -23,24 +26,4 @@ jobs:
           $ref = "${{github.event.ref}}"
           ./deploy.ps1 -ref $ref
 
-      - name: Check commig
-        shell: pwsh
-        run: | 
-          $VerbosePreference = 'Continue'
-
-          $gitShow = git show -s
-          $gitshow  | Write-Host
-          
-          $commit = $gitshow[0].Substring(7) 
-
-          $tagref= "${{github.event.head_commit.id}}"
-
-          "Actual commit [{0}] " -f $commit | Write-Host
-          "ref    commit [{0}] " -f $tagref | write-host
-          $equal = ($commit -eq $tagref)
-          
-          "Confirmed head commit [{0}]" -f $equal | Write-Host
-
-
-
-        
+     
