@@ -15,7 +15,7 @@ jobs:
       - name: Deploy
         shell: pwsh
         run: | 
-          $ref = ${{github.event.ref}}
+          $ref = "${{github.event.ref}}"
           ./deploy.ps1 -ref $ref -verbose
 
       - name: Check commig
@@ -28,7 +28,7 @@ jobs:
           
           $commit = $gitshow[0].Substring(7) 
 
-          $tagref= ${{github.event.head_commit.id}}
+          $tagref= "${{github.event.head_commit.id}}"
 
           "Actual commit [{0}] " -f $commit | Write-Host
           "ref    commit [{0}] " -f $tagref | write-host
@@ -42,7 +42,7 @@ jobs:
 
           $VerbosePreference = 'Continue'
 
-          $ref = ${{github.event.ref}}
+          $ref = "${{github.event.ref}}"
        
           $tag = $ref.Split('/')[2]
 
