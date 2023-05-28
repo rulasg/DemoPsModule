@@ -10,7 +10,13 @@ $tag = $ref.Split('/')[2]
 
 "Tag value [$tag]" | Write-Verbose
 
-$version = $tag.split('-')[0]
+# clearn string from $version value
+
+$version = $tag.split('-')[0] 
+
+#remove all leters from $version
+$version = $version -replace '[a-zA-Z]'
+
 
 "Version value [$version]" | Write-Verbose
 
