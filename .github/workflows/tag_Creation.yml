@@ -21,7 +21,7 @@ jobs:
         shell: pwsh
         run: | 
           $ref = "${{github.event.ref}}"
-          ./deploy.ps1 -ref $ref -verbose
+          ./deploy.ps1 -ref $ref
 
       - name: Check commig
         shell: pwsh
