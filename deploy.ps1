@@ -45,10 +45,5 @@ $parameters = @{
 }
 Update-ModuleManifest  @parameters   
 
-# read manigest file    
-# $manifestModified = Import-powerShellDataFile -Path $manifestPath.FullName
-# $manifestModified
-# $manifestModified.PrivateData.PSData
-
 # Publish
- ./publish.ps1 -Force -WhatIf
+ ./publish.ps1 -Force
