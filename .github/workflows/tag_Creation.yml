@@ -24,8 +24,6 @@ jobs:
       - name: Deploy
         shell: pwsh
         run: | 
-          $ref = "${{github.event.ref}}"
-          $env:NUGETAPIKEY = "${{secrets.NUGETAPIKEY}}"
-          ./deploy.ps1 -ref $ref
+          ./deploy.ps1 -ref "${{github.event.ref}}" -NugetApiKey "${{secrets.NUGETAPIKEY}}"
 
      
