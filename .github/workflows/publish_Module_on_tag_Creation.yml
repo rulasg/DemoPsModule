@@ -24,6 +24,8 @@ jobs:
       - name: Deploy
         shell: pwsh
         run: | 
-          ./deploy.ps1 -ref "${{github.event.ref}}" -NugetApiKey "${{secrets.NUGETAPIKEY}}"
+          $ref = "${{github.event.ref}}"
+          $tag = $ref.Split('/')[2]
+          ./publish.ps1 -Tag $tag -Checkout -NugetApiKey "${{secrets.NUGETAPIKEY}}"
 
      
