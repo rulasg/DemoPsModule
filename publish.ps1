@@ -1,7 +1,9 @@
 
-[cmdletbinding()]
+[cmdletbinding(SupportsShouldProcess, ConfirmImpact='High')]
 param(
-    [Parameter(Mandatory=$false)] [string]$Tag,
+    # Update the module manifest with the version tag (Sample: v10.0.01-alpha)
+    [Parameter(Mandatory=$false)] [string]$VersionTag,
+    # PAT for the PSGallery
     [Parameter(Mandatory=$false)] [string]$NuGetApiKey
 )
 
@@ -53,13 +55,11 @@ function Publish-ModuleToPSGallery{
         $ConfirmPreference = 'None'
     }
 
+    $message ="Publishing {0} {1} {2} to PSGallery ..." -f $($psd1.RootModule), $($psd1.ModuleVersion), $($psd1.PrivateData.pSData.Prerelease)  
+    Write-Information -InformationAction Continue -Message $message 
+
     # Publish the module with ShouldProcess (-whatif, -confirm)
     if ($PSCmdlet.ShouldProcess($psdPath, "Publish-Module")) {
-        $message ="Publishing {0} {1} {2} to PSGallery ..." -f $($psd1.RootModule), $($psd1.ModuleVersion), $($psd1.PrivateData.pSData.Prerelease)  
-        # show an empty line
-        Write-Information -InformationAction Continue -Message ""
-        Write-Information -InformationAction Continue -Message $message 
-
         Publish-Module -WhatIf  -Name $psdPath -NuGetApiKey $NuGetApiKey -Force:$ForcePublish
     }
 }
@@ -67,10 +67,10 @@ function Publish-ModuleToPSGallery{
 function Get-ModuleVersion {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory=$true)][string]$Tag
+        [Parameter(Mandatory=$true)][string]$VersionTag
     )
 
-    $version = $tag.split('-')[0] 
+    $version = $VersionTag.split('-')[0] 
     #remove all leters from $version
     $version = $version -replace '[a-zA-Z_]'
     $version
@@ -79,10 +79,10 @@ function Get-ModuleVersion {
 function Get-ModulePreRelease {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory=$true)][string]$Tag
+        [Parameter(Mandatory=$true)][string]$VersionTag
     )
 
-    $preRelease = $tag.split('-')[1]
+    $preRelease = $VersionTag.split('-')[1]
     $preRelease
 }
 
@@ -122,14 +122,14 @@ function Get-ModuleManifestPath {
 ##################
 
 # Process Tag
-if($Tag){
+if($VersionTag){
 
     $parameters = @{
-        ModuleVersion = Get-ModuleVersion -Tag $Tag
+        ModuleVersion = Get-ModuleVersion -VersionTag $VersionTag
         Path = Get-ModuleManifestPath
-        Prerelease = Get-ModulePreRelease -Tag $Tag
+        Prerelease = Get-ModulePreRelease -VersionTag $VersionTag
     }
-    Update-ModuleManifest  @parameters -WhatIf
+    Update-ModuleManifest  @parameters
 }
 
 
