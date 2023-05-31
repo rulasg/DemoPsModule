@@ -1,6 +1,6 @@
 
-
-$publish_ps1 = $PSScriptRoot | split-path -Parent | split-path -Parent | Join-Path -ChildPath 'publish.ps1'
+$publish_ps1 = $PSScriptRoot | Split-path -Parent | split-path -Parent | Join-Path -ChildPath 'publish.ps1'
+$manifestPath = $PSScriptRoot | Split-Path -Parent | Split-Path -Parent | Join-Path -ChildPath 'DemoPsModule.psd1'
 
 $ErrorParameters = @{
     ErrorAction = 'SilentlyContinue' 
@@ -50,28 +50,39 @@ function DemoPsModuleTest_Publish_With_VersionTag{
 
     # Confirm that we extract from the tag the paramers
 
+    Reset-Manifest
+
     $Env:NUGETAPIKEY = "something"
 
     $versionTag = '1.0.0-alpha'
 
     & $publish_ps1 -VersionTag $versionTag @InfoParameters -whatif
 
-    Assert-ManifestAndReset -Version "1.0.0" -Prerelease "alpha"
+    Assert-Manifest -Version "1.0.0" -Prerelease "alpha"
+
+    Reset-Manifest
 }
 
 
-function Assert-ManifestAndReset{
+function Assert-Manifest{
     param(
         [Parameter(Mandatory=$true)][string]$Version,
         [Parameter(Mandatory=$true)][string]$Prerelease  
     )
 
-    $manifestPath = $PSScriptRoot | Split-Path -Parent | Split-Parent | Join-Path -ChildPath 'DemoPsModule.psd1'
     $manifest = Import-PowerShellDataFile -Path $manifestPath
 
     Assert-AreEqual -Expected $version -Presented $manifest.ModuleVersion
     Assert-AreEqual -Expected $prerelease -Presented $manifest.PrivateData.PSData.Prerelease
+}
 
-    git restore $manifestPath
+function Reset-Manifest{
 
+    # Check git status and see if manifest is dirty
+    $status = git status --porcelain $manifestPath
+
+    if ($status -ne '') {
+        # Manifest is dirty, restore it
+        git restore $manifestPath
+    }
 }
