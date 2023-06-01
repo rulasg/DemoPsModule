@@ -14,22 +14,30 @@ param(
 if($VersionTag){
 
     $parameters = @{
-        ModuleVersion = Get-ModuleVersion -VersionTag $VersionTag
-        Path = Get-ModuleManifestPath
-        Prerelease = Get-ModulePreRelease -VersionTag $VersionTag
+        ModuleVersion = Get-PublishModuleVersion -VersionTag $VersionTag
+        Path = Get-PublishModuleManifestPath
+        Prerelease = Get-PublishModulePreRelease -VersionTag $VersionTag
     }
-    Update-ModuleManifest  @parameters 
+
+    try {
+        Update-PublishModuleManifest  @parameters 
+    }
+    catch {
+        Write-Error -Message "Failed to update module manifest with version tag [$VersionTag]. Error: $_"
+        exit 1
+    }
 }
 
 # check that $NuggetApiKey is null or whitespace
 # If it is use environment variable $env:NugetApiKey
 if ( [string]::IsNullOrWhiteSpace($NuGetApiKey) ) {
     if ( [string]::IsNullOrWhiteSpace($env:NUGETAPIKEY) ) {
-        Write-Error -Message '$Env:NUGETAPIKEY is not set. Try running `$Env:NUGETAPIKEY = (Find-DocsFile nugetapikey | rsk | Get-SecretData).Get()`'
+        # Write-Error -Message '$Env:NUGETAPIKEY is not set. Try running `$Env:NUGETAPIKEY = (Find-DocsFile nugetapikey | rsk | Get-SecretData).Get()`'
+        Write-Error -Message '$Env:NUGETAPIKEY is not set. Please set the variable with a PSGallery PAT or use -NuGetApiKey parameter.'
         exit 1
     }
     $NuGetApiKey = $env:NUGETAPIKEY
 }
 
 # Publish module to PSGallery
-Publish-ModuleToPSGallery -NuGetApiKey $NuGetApiKey -Force
+Invoke-PublishModuleToPSGallery -NuGetApiKey $NuGetApiKey -Force

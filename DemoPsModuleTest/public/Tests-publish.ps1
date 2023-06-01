@@ -146,17 +146,13 @@ function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_NotValid{
 
     $NotValid + $NotValid3Parts| ForEach-Object {
         $versionTag = $_
+ 
+        & $publish_ps1 -VersionTag $versionTag @ErrorParameters @InfoParameters -whatif
         
-        $hasThrow = $false
-        try{    
-            & $publish_ps1 -VersionTag $versionTag @ErrorParameters @InfoParameters -whatif
-        }
-        catch{
-            Assert-IsFalse -Condition $? -Comment "Publish command should fail with Exit <> 0"
-            Assert-IsTrue -Condition ($errorVar.exception.Count -gt 0) -Comment "Publish command shuld show error with version tag [$versionTag]"
-            $hasThrow = $true
-        }
-        Assert-IsTrue -Condition $hasThrow -Comment "Publish command shuld throw an exception with version tag [$versionTag]"
+        Assert-IsFalse -Condition $? -Comment "Publish command should fail with Exit <> 0"
+        # Assert-ContainsPattern -Expected "Cannot process argument transformation on parameter 'ModuleVersion'.*" -Presented $errorVar.exception.Message
+        Assert-ContainsPattern -Expected "Failed to update module manifest with version tag*" -Presented $errorVar.exception.Message
+        Assert-ContainsPattern -Expected "*$versionTag*" -Presented $errorVar.exception.Message
 
         Reset-Manifest
     }

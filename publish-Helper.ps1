@@ -1,7 +1,9 @@
 
 Write-Information -Message ("Loading {0} ..." -f ($PSCommandPath | Split-Path -LeafBase)) 
 
-function Publish-ModuleToPSGallery{
+# This functionalty should be moved to TestingHelper module to allow a simple Publish.ps1 code.
+
+function Invoke-PublishModuleToPSGallery{
     [CmdletBinding(
     SupportsShouldProcess,
     ConfirmImpact='High'
@@ -45,7 +47,7 @@ function Publish-ModuleToPSGallery{
     }
 }
 
-function Get-ModuleVersion {
+function Get-PublishModuleVersion {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)][string]$VersionTag
@@ -57,7 +59,7 @@ function Get-ModuleVersion {
     $version
 }
 
-function Get-ModulePreRelease {
+function Get-PublishModulePreRelease {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)][string]$VersionTag
@@ -71,7 +73,7 @@ function Get-ModulePreRelease {
     $preRelease
 }
 
-function Update-MyModuleManifest {
+function Update-PublishModuleManifest {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)][string]$ModuleVersion,
@@ -86,9 +88,17 @@ function Update-MyModuleManifest {
         # FunctionsToExport = '*'
     }
     Update-ModuleManifest  @parameters   
+
+    if($?){
+        Write-Information -MessageData "Updated module manifest with version tag [$VersionTag]"
+    }
+    else{
+        Write-Error -Message "Failed to update module manifest with version tag [$VersionTag]"
+        exit 1
+    }
 }
 
-function Get-ModuleManifestPath {
+function Get-PublishModuleManifestPath {
     [CmdletBinding()]
     param()
 
