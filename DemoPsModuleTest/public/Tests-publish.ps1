@@ -78,11 +78,17 @@ function Assert-Manifest{
 
 function Reset-Manifest{
 
+    Push-Location . -StackName ResetManifest
+
+    $manifestPath | Split-Path -Parent | Set-Location 
+
     # Check git status and see if manifest is dirty
     $status = git status --porcelain $manifestPath
 
-    if ($status -ne '') {
+    if ($status) {
         # Manifest is dirty, restore it
         git restore $manifestPath
     }
+
+    Pop-Location -StackName ResetManifest
 }
