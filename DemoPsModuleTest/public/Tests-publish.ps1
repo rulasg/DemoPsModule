@@ -32,7 +32,7 @@ function DemoPsModuleTest_Publish_WithKey{
     & $publish_ps1 -NuGetApiKey "something" @InfoParameters -whatif
 
     Assert-IsTrue $? -Comment "Publish command should success with Exit = 0" 
-    Assert-IsTrue -Condition ($infovar[0].MessageData.StartsWith('Publishing DemoPsModule.psm1') )
+    Assert-ModulePublishedSuccesslly -Presented $infoVar
 }
 
 function DemoPsModuleTest_Publish_Key_InEnvironment{
@@ -42,8 +42,37 @@ function DemoPsModuleTest_Publish_Key_InEnvironment{
     & $publish_ps1 -NuGetApiKey "something" @InfoParameters -whatif
     
     Assert-IsTrue $? -Comment "Publish command should success with Exit = 0" 
-    Assert-IsTrue -Condition ($infovar[0].MessageData.StartsWith('Publishing DemoPsModule.psm1') )
 
+    Assert-ContainsPattern -Expected "Loading publish-Helper ..." -Presented $infoVar.MessageData
+    Assert-ModulePublishedSuccesslly -Presented $infoVar
+}
+
+function Assert-ModulePublishedSuccesslly{
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)][object] $Presented
+    )
+    Assert-ContainsPattern -Expected "Publishing DemoPsModule.psm1*" -Presented $infoVar.MessageData
+
+}
+
+function Assert-ContainsPattern{
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)] [string] $Expected,
+        [Parameter(Mandatory)] [string[]] $Presented,
+        [Parameter()] [string] $Comment
+    )
+
+    $found = $false
+    foreach($p in $Presented){
+        if ($p -like $Expected) {
+            $found = $true
+            break
+        }
+    }
+
+    Assert-IsTrue -Condition $found -Comment "Not found pattern [$Expected] in $Presented"
 }
 
 function DemoPsModuleTest_Publish_With_VersionTag{
@@ -58,22 +87,100 @@ function DemoPsModuleTest_Publish_With_VersionTag{
 
     & $publish_ps1 -VersionTag $versionTag @InfoParameters -whatif
 
-    Assert-Manifest -Version "1.0.0" -Prerelease "alpha"
+    Assert-Manifest -Version "1.0.0" -Prerelease "alpha" -Comment "Valid version tag [$versionTag]"
 
     Reset-Manifest
 }
 
+function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_Valid{
+
+    $Env:NUGETAPIKEY = "something"
+
+    # Valid format
+    $valid = @(
+        "1.0",
+        "1.0.0",
+        "1.0.0.0",
+        "1.0.0-alpha",
+        "1.0.0-kk2",
+        "0.1",
+        "0.0.1",
+        "v1.0.0",
+        "r1.0",
+        "r1.0.0",
+        "Release1.0.0",
+        "Release_1.0.0",
+        "Version1.0.0",
+        "Version_1.0.0"
+    )
+
+    $valid | ForEach-Object {
+        $versionTag = $_
+        $ExpectedVersion = $versionTag.Split('-')[0] -replace '[a-zA-Z_]'
+        $ExpectedPrerelease = $versionTag.Split('-')[1] ??[string]::Empty
+        
+        & $publish_ps1 -VersionTag $versionTag @InfoParameters -whatif
+        Assert-ModulePublishedSuccesslly -Presented $infoVar
+        Assert-Manifest -Version $ExpectedVersion -Prerelease $ExpectedPrerelease -Comment "Valid version tag [$versionTag]"
+
+        Reset-Manifest
+    }
+}
+
+function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_NotValid{
+
+    $Env:NUGETAPIKEY = "something"
+        
+    $NotValid = @(
+        "1.1.1.1.1",        # Error: "Version string portion was too short or too long."
+        "1",                # Error: "Version string portion was too short or too long."
+        "1.a.1"             # Letters will be removed from version before passing
+    )
+
+    $NotValid3Parts = @( # Version '{0}' must have exactly 3 parts for a Prerelease string to be used.
+        "1-kk",
+        "1.0-dev",
+        "1.1.1.1-kk",
+        "1.1.1.1.1-kk"
+    )
+
+    $NotValid + $NotValid3Parts| ForEach-Object {
+        $versionTag = $_
+        
+        $hasThrow = $false
+        try{    
+            & $publish_ps1 -VersionTag $versionTag @ErrorParameters @InfoParameters -whatif
+        }
+        catch{
+            Assert-IsFalse -Condition $? -Comment "Publish command should fail with Exit <> 0"
+            Assert-IsTrue -Condition ($errorVar.exception.Count -gt 0) -Comment "Publish command shuld show error with version tag [$versionTag]"
+            $hasThrow = $true
+        }
+        Assert-IsTrue -Condition $hasThrow -Comment "Publish command shuld throw an exception with version tag [$versionTag]"
+
+        Reset-Manifest
+    }
+
+}
 
 function Assert-Manifest{
     param(
-        [Parameter(Mandatory=$true)][string]$Version,
-        [Parameter(Mandatory=$true)][string]$Prerelease  
+        [Parameter(Mandatory)][string]$Version,
+        [Parameter()][string]$Prerelease,
+        [Parameter()][string]$Comment
     )
 
     $manifest = Import-PowerShellDataFile -Path $manifestPath
 
-    Assert-AreEqual -Expected $version -Presented $manifest.ModuleVersion
-    Assert-AreEqual -Expected $prerelease -Presented $manifest.PrivateData.PSData.Prerelease
+    
+    Assert-AreEqual -Expected $version -Presented $manifest.ModuleVersion -Comment "Expected[$version] Presented[$($manifest.ModuleVersion)]] - $Comment"
+    
+    # If preRelease is not present in the manifest, then we expect null
+    if ([string]::IsNullOrWhiteSpace($prerelease)) {
+        Assert-IsNull -Object $manifest.PrivateData.PSData.Prerelease
+    } else {
+        Assert-AreEqual -Expected $prerelease -Presented $manifest.PrivateData.PSData.Prerelease -Comment "Expected[$prerelease] Presented[$($manifest.PrivateData.PSData.Prerelease)]] - $Comment"
+    }
 }
 
 function Reset-Manifest{
