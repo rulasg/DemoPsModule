@@ -38,7 +38,7 @@ jobs:
           # Trigger error
           $tag = "  "
 
-          If([string]::IsNullorwhitespace ($tag)) {
+          If([string]::IsNullorwhitespace($tag)) {
             # Tag name is empty, exit
             write-error "Tag name is empty"
             exit 1
