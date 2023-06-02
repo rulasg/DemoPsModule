@@ -1,9 +1,9 @@
-name: TagCreation
+name: publish_Module_on_tag_Creation
 
 on:
     push:
         tags:
-        - 'v*'
+        # - 'v*'
     workflow_dispatch:
 
 permissions:
