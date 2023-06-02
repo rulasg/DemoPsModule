@@ -24,7 +24,6 @@ function Import-TestingHelper{
         [Parameter()][switch]$AllowPrerelease,
         [Parameter()][switch]$PassThru
     )
-
     
     if ($Version) {
         $V = $Version.Split('-')
@@ -47,5 +46,4 @@ function Import-TestingHelper{
 Import-TestingHelper -AllowPrerelease
 
 # Run test by PSD1 file
-Test-ModulelocalPSD1 -ShowTestErrors:$ShowTestErrors 
-# Test-ModulelocalPSD1 -ShowTestErrors:$ShowTestErrors -TestName DemoPsModuleTest_Publish*
+Test-ModulelocalPSD1 -ShowTestErrors:$ShowTestErrors
