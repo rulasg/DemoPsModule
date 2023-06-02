@@ -26,6 +26,6 @@ jobs:
         run: | 
           $ref = "${{github.event.ref}}"
           $tag = $ref.Split('/')[2]
-          ./publish.ps1 -VersionTag $tag  -NugetApiKey "${{secrets.NUGETAPIKEY}}"
+          ./publish.ps1 -VersionTag $tag -NugetApiKey "${{secrets.NUGETAPIKEY}}" -Whatif
 
      
