@@ -35,11 +35,14 @@ jobs:
             write-host "workflow_dispatch triggered on ref leaf [$tag]"
           }
 
-          If([string]::IsNullOrEmpty($tag)) {
+          # Trigger error
+          $tag = "  "
+
+          If([string]::IsNullorwhitespace ($tag)) {
             # Tag name is empty, exit
             write-error "Tag name is empty"
             exit 1
-          }])
+          }
 
           ./publish.ps1 -VersionTag $tag -NugetApiKey "${{secrets.NUGETAPIKEY}}" -Whatif
 
