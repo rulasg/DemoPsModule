@@ -1,10 +1,12 @@
 name: publish_Module_on_tag_Creation
 
 on:
-    push:
-        tags:
-        - '*'
-    workflow_dispatch:
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+  release:
+    types: [published]
 
 permissions:
   contents: read
