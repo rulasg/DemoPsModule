@@ -2,9 +2,9 @@ name: publish_Module_on_tag_Creation
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - '*'
+  # push:
+  #   tags:
+  #     - '*'
   release:
     types: [published]
 
