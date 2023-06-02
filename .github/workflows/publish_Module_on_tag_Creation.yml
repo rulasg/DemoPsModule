@@ -3,14 +3,14 @@ name: publish_Module_on_tag_Creation
 on:
     push:
         tags:
-        # - 'v*'
+        - '*'
     workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  print_context:
+  publish_Production:
     runs-on: ubuntu-latest
     environment: Production
     steps:
@@ -21,7 +21,7 @@ jobs:
         run: |
           echo $EVENT_CONTEXT
 
-      - name: Deploy
+      - name: publish_ps1
         shell: pwsh
         run: | 
           $ref = "${{github.event.ref}}"
