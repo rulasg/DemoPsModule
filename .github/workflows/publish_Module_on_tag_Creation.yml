@@ -2,9 +2,6 @@ name: publish_Module_on_tag_Creation
 
 on:
   workflow_dispatch:
-  # push:
-  #   tags:
-  #     - '*'
   release:
     types: [published]
 
@@ -27,7 +24,23 @@ jobs:
         shell: pwsh
         run: | 
           $ref = "${{github.event.ref}}"
-          $tag = $ref.Split('/')[2]
+
+          If ([string]::IsNullOrEmpty($ref)) {
+            # Release published trigger
+            $tag = "${{github.event.release.tag_name}}"
+            write-host "Release published trigger on tag [$tag]"
+          } else {
+            # Read Tag o Branch name
+            $tag = $ref.Split('/')[2]
+            write-host "workflow_dispatch triggered on ref leaf [$tag]"
+          }
+
+          If([string]::IsNullOrEmpty($tag)) {
+            # Tag name is empty, exit
+            write-error "Tag name is empty"
+            exit 1
+          }])
+
           ./publish.ps1 -VersionTag $tag -NugetApiKey "${{secrets.NUGETAPIKEY}}" -Whatif
 
      
