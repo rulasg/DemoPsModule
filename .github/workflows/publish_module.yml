@@ -1,4 +1,4 @@
-name: publish_Module_on_tag_Creation
+name: Publish on Release Published
 
 on:
   workflow_dispatch:
