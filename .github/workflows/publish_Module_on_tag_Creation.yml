@@ -28,7 +28,8 @@ jobs:
           If ([string]::IsNullOrEmpty($ref)) {
             # Release published trigger
             $tag = "${{github.event.release.tag_name}}"
-            write-host "Release published trigger on tag [$tag]"
+            $releaseName = "${{github.event.release.name}}"
+            write-host -message ("Release [{0}] on tag [$tag]")
           } else {
             # Read Tag o Branch name
             $tag = $ref.Split('/')[2]
