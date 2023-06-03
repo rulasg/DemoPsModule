@@ -42,10 +42,59 @@ function Invoke-PublishModuleToPSGallery{
 
     # Publish the module with ShouldProcess (-whatif, -confirm)
     if ($PSCmdlet.ShouldProcess($psdPath, "Publish-Module")) {
-        # During testing we should never reach this point due to -WhatIf command on all tests.
-        Publish-Module -WhatIf  -Name $psdPath -NuGetApiKey $NuGetApiKey -Force:$ForcePublish
+        # During testing we should use -WhatIf paarmetre when calling for publish. 
+        # Just reach this point when testing call failure
+        Invoke-PublishModule -Name $psdPath -NuGetApiKey $NuGetApiKey -Force:$ForcePublish
     }
-}
+} Export-ModuleMember -Function Invoke-PublishModuleToPSGallery
+
+function Update-PublishModuleManifest {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)][string]$VersionTag
+    )
+
+    $parameters = @{
+        ModuleVersion = Get-PublishModuleVersion -VersionTag $VersionTag
+        Path = Get-PublishModuleManifestPath
+        Prerelease = Get-PublishModulePreRelease -VersionTag $VersionTag
+    }
+
+    Update-ModuleManifest  @parameters   
+
+    if($?){
+        Write-Information -MessageData "Updated module manifest with version tag [$VersionTag]"
+    }
+    else{
+        Write-Error -Message "Failed to update module manifest with version tag [$VersionTag]"
+        exit 1
+    }
+} Export-ModuleMember -Function Update-PublishModuleManifest
+
+function Invoke-PublishModule {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)][string]$Name,
+        [Parameter(Mandatory=$true)][string]$NuGetApiKey,
+        [Parameter(Mandatory=$false)][switch]$Force
+    )
+
+    $parameters = @{
+        Name = $Name
+        NuGetApiKey = $NuGetApiKey
+        Force = $Force
+    }
+
+    Publish-Module @parameters
+
+    if($?){
+        Write-Information -MessageData "Published module [$Name] to PSGallery"
+    }
+    else{
+        Write-Error -Message "Failed to publish module [$Name] to PSGallery"
+        exit 1
+    }
+} 
 
 function Get-PublishModuleVersion {
     [CmdletBinding()]
@@ -71,31 +120,6 @@ function Get-PublishModulePreRelease {
     # $null or [string]::Empty leaves the value that has.
     $preRelease = $preRelease ?? " "
     $preRelease
-}
-
-function Update-PublishModuleManifest {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory=$true)][string]$ModuleVersion,
-        [Parameter(Mandatory=$true)][string]$Path,
-        [Parameter(Mandatory=$true)][string]$Prerelease
-    )
-
-    $parameters = @{
-        ModuleVersion = $ModuleVersion
-        Path = $Path
-        Prerelease = $Prerelease
-        # FunctionsToExport = '*'
-    }
-    Update-ModuleManifest  @parameters   
-
-    if($?){
-        Write-Information -MessageData "Updated module manifest with version tag [$VersionTag]"
-    }
-    else{
-        Write-Error -Message "Failed to update module manifest with version tag [$VersionTag]"
-        exit 1
-    }
 }
 
 function Get-PublishModuleManifestPath {

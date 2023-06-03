@@ -4,23 +4,21 @@ param(
     # Update the module manifest with the version tag (Sample: v10.0.01-alpha)
     [Parameter(Mandatory=$false)] [string]$VersionTag,
     # PAT for the PSGallery
-    [Parameter(Mandatory=$false)] [string]$NuGetApiKey
+    [Parameter(Mandatory=$false)] [string]$NuGetApiKey,
+    # DependencyInjection Ps1 file
+    [Parameter(Mandatory=$false)] [scriptblock]$DependencyInjection
 )
 
 # Load helper 
+# We Dot souce to allow all to be in the same scope as the sript
 . ($PSScriptRoot | Join-Path -ChildPath "publish-Helper.ps1")
+if ($DependencyInjection) { . $DependencyInjection }
 
 # Process Tag
 if($VersionTag){
 
-    $parameters = @{
-        ModuleVersion = Get-PublishModuleVersion -VersionTag $VersionTag
-        Path = Get-PublishModuleManifestPath
-        Prerelease = Get-PublishModulePreRelease -VersionTag $VersionTag
-    }
-
     try {
-        Update-PublishModuleManifest  @parameters 
+        Update-PublishModuleManifest  $VersionTag 
     }
     catch {
         Write-Error -Message "Failed to update module manifest with version tag [$VersionTag]. Error: $_"
@@ -40,4 +38,6 @@ if ( [string]::IsNullOrWhiteSpace($NuGetApiKey) ) {
 }
 
 # Publish module to PSGallery
-Invoke-PublishModuleToPSGallery -NuGetApiKey $NuGetApiKey -Force
+# Invoke-PublishModuleToPSGallery -NuGetApiKey $NuGetApiKey -Force -WhatIf:$WhatIf
+Invoke-PublishModuleToPSGallery -NuGetApiKey $NuGetApiKey -Force 
+

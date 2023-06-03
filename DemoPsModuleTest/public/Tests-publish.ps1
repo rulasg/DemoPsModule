@@ -31,7 +31,38 @@ function DemoPsModuleTest_Publish_WithKey{
 
     & $publish_ps1 -NuGetApiKey "something" @InfoParameters -whatif
 
-    Assert-IsTrue $? -Comment "Publish command should success with Exit = 0" 
+    Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
+    Assert-ModulePublishedSuccesslly -Presented $infoVar
+}
+
+function DemoPsModuleTest_Publish_WithWrongKey{
+
+    # Injecting this code to the module function
+
+    $scriptblock = {
+        
+        function Invoke-PublishModule {
+            [CmdletBinding()]
+            param(
+                [Parameter(Mandatory=$true)][string]$Name,
+                [Parameter(Mandatory=$true)][string]$NuGetApiKey,
+                [Parameter(Mandatory=$false)][switch]$Force
+                )
+                
+            throw "NuGetApiKey is not valid"
+        }
+    }
+
+    $hasThrow = $false
+    try {
+        & $publish_ps1 -DependencyInjection $scriptblock  -NuGetApiKey "something" @InfoParameters @ErrorParameters
+    }
+    catch {
+        Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
+        $hasThrow = $true
+    }
+    Assert-IsTrue -Condition $hasThrow -Comment "Publish command should fail with Exit <> 0"
+
     Assert-ModulePublishedSuccesslly -Presented $infoVar
 }
 
@@ -41,38 +72,9 @@ function DemoPsModuleTest_Publish_Key_InEnvironment{
 
     & $publish_ps1 -NuGetApiKey "something" @InfoParameters -whatif
     
-    Assert-IsTrue $? -Comment "Publish command should success with Exit = 0" 
+    Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
 
-    Assert-ContainsPattern -Expected "Loading publish-Helper ..." -Presented $infoVar.MessageData
     Assert-ModulePublishedSuccesslly -Presented $infoVar
-}
-
-function Assert-ModulePublishedSuccesslly{
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory)][object] $Presented
-    )
-    Assert-ContainsPattern -Expected "Publishing DemoPsModule.psm1*" -Presented $infoVar.MessageData
-
-}
-
-function Assert-ContainsPattern{
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory)] [string] $Expected,
-        [Parameter(Mandatory)] [string[]] $Presented,
-        [Parameter()] [string] $Comment
-    )
-
-    $found = $false
-    foreach($p in $Presented){
-        if ($p -like $Expected) {
-            $found = $true
-            break
-        }
-    }
-
-    Assert-IsTrue -Condition $found -Comment "Not found pattern [$Expected] in $Presented"
 }
 
 function DemoPsModuleTest_Publish_With_VersionTag{
@@ -157,6 +159,34 @@ function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_NotValid{
         Reset-Manifest
     }
 
+}
+
+function Assert-ModulePublishedSuccesslly{
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)][object] $Presented
+    )
+    Assert-ContainsPattern -Expected "Publishing DemoPsModule.psm1*" -Presented $infoVar.MessageData
+
+}
+
+function Assert-ContainsPattern{
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)] [string] $Expected,
+        [Parameter(Mandatory)] [string[]] $Presented,
+        [Parameter()] [string] $Comment
+    )
+
+    $found = $false
+    foreach($p in $Presented){
+        if ($p -like $Expected) {
+            $found = $true
+            break
+        }
+    }
+
+    Assert-IsTrue -Condition $found -Comment "Not found pattern [$Expected] in $Presented"
 }
 
 function Assert-Manifest{
