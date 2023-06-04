@@ -32,12 +32,14 @@ function DemoPsModuleTest_Publish_WithKey{
     & $publish_ps1 -NuGetApiKey "something" @InfoParameters -whatif
 
     Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
-    Assert-ModulePublishedSuccesslly -Presented $infoVar
+    Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
 }
 
-function DemoPsModuleTest_Publish_WithWrongKey{
+function DemoPsModuleTest_Publish_WithWrongKey_Injected{
 
     # Injecting this code to the module function
+
+    $errorMessage ="some message"
 
     $scriptblock = {
         
@@ -49,7 +51,8 @@ function DemoPsModuleTest_Publish_WithWrongKey{
                 [Parameter(Mandatory=$false)][switch]$Force
                 )
                 
-            throw "NuGetApiKey is not valid"
+            # throw "NuGetApiKey is not valid"
+            throw $errorMessage
         }
     }
 
@@ -58,12 +61,31 @@ function DemoPsModuleTest_Publish_WithWrongKey{
         & $publish_ps1 -DependencyInjection $scriptblock  -NuGetApiKey "something" @InfoParameters @ErrorParameters
     }
     catch {
-        Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
+        # Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
+        Assert-AreEqual -Expected $errorMessage -Presented $_.exception.Message
         $hasThrow = $true
     }
     Assert-IsTrue -Condition $hasThrow -Comment "Publish command should fail with Exit <> 0"
 
-    Assert-ModulePublishedSuccesslly -Presented $infoVar
+    Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
+}
+
+function DemoPsModuleTest_Publish_WithWrongKey_Integrated{
+
+    # Injecting this code to the module function
+
+    $hasThrow = $false
+    try {
+        & $publish_ps1  -NuGetApiKey "something" @InfoParameters @ErrorParameters
+    }
+    catch {
+        # Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
+        # Assert-AreEqual -Expected $errorMessage -Presented $_.exception.Message
+        $hasThrow = $true
+    }
+    Assert-IsTrue -Condition $hasThrow -Comment "Publish command should fail with Exit <> 0"
+
+    Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
 }
 
 function DemoPsModuleTest_Publish_Key_InEnvironment{
@@ -74,7 +96,7 @@ function DemoPsModuleTest_Publish_Key_InEnvironment{
     
     Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
 
-    Assert-ModulePublishedSuccesslly -Presented $infoVar
+    Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
 }
 
 function DemoPsModuleTest_Publish_With_VersionTag{
@@ -122,7 +144,7 @@ function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_Valid{
         $ExpectedPrerelease = $versionTag.Split('-')[1] ??[string]::Empty
         
         & $publish_ps1 -VersionTag $versionTag @InfoParameters -whatif
-        Assert-ModulePublishedSuccesslly -Presented $infoVar
+        Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
         Assert-Manifest -Version $ExpectedVersion -Prerelease $ExpectedPrerelease -Comment "Valid version tag [$versionTag]"
 
         Reset-Manifest
@@ -161,7 +183,7 @@ function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_NotValid{
 
 }
 
-function Assert-ModulePublishedSuccesslly{
+function Assert-Publish_PS1_Invoke-PublishModule{
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)][object] $Presented
