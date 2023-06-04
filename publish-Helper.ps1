@@ -38,7 +38,7 @@ function Invoke-PublishModuleToPSGallery{
     }
 
     $message ="Publishing {0} {1} {2} to PSGallery ..." -f $($psd1.RootModule), $($psd1.ModuleVersion), $($psd1.PrivateData.pSData.Prerelease)  
-    $message | Write-Information -InformationAction Continue
+    $message | Write-Information
 
     # Publish the module with ShouldProcess (-whatif, -confirm)
     if ($PSCmdlet.ShouldProcess($psdPath, "Publish-Module")) {

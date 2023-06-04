@@ -118,6 +118,22 @@ function DemoPsModuleTest_Publish_With_VersionTag{
 
 function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_Valid{
 
+    $errorMessage ="some message"
+
+    $scriptblock = {
+        
+        function Invoke-PublishModule {
+            [CmdletBinding()]
+            param(
+                [Parameter(Mandatory=$true)][string]$Name,
+                [Parameter(Mandatory=$true)][string]$NuGetApiKey,
+                [Parameter(Mandatory=$false)][switch]$Force
+                )
+                
+            return
+        }
+    }
+    
     $Env:NUGETAPIKEY = "something"
 
     # Valid format
@@ -143,7 +159,8 @@ function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_Valid{
         $ExpectedVersion = $versionTag.Split('-')[0] -replace '[a-zA-Z_]'
         $ExpectedPrerelease = $versionTag.Split('-')[1] ??[string]::Empty
         
-        & $publish_ps1 -VersionTag $versionTag @InfoParameters -whatif
+        & $publish_ps1 -VersionTag $versionTag -DependencyInjection $scriptblock @InfoParameters 
+
         Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
         Assert-Manifest -Version $ExpectedVersion -Prerelease $ExpectedPrerelease -Comment "Valid version tag [$versionTag]"
 
