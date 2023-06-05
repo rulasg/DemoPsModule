@@ -220,7 +220,7 @@ function Assert-ContainsPattern{
         }
     }
 
-    Assert-IsTrue -Condition $found -Comment "Not found pattern [$Expected] in $Presented"
+    Assert-IsTrue -Condition $found -Comment "Not found pattern [$Expected] in $Presented - $Comment "
 }
 
 function Assert-ContainsNotPattern{
@@ -239,10 +239,11 @@ function Assert-ContainsNotPattern{
         }
     }
 
-    Assert-IsFalse -Condition $found -Comment "Found pattern [$Expected] in $Presented"
+    Assert-IsFalse -Condition $found -Comment "Found pattern [$Expected] in $Presented - $Comment"
 }
 
 function Assert-Manifest{
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory)][string]$Version,
         [Parameter()][string]$Prerelease,
@@ -263,6 +264,8 @@ function Assert-Manifest{
 }
 
 function Reset-Manifest{
+    [CmdletBinding(SupportsShouldProcess)]
+    param()
 
     Push-Location . -StackName ResetManifest
 
@@ -273,7 +276,9 @@ function Reset-Manifest{
 
     if ($status) {
         # Manifest is dirty, restore it
-        git restore $manifestPath
+        if ($PSCmdlet.ShouldProcess($manifestPath, "git restore")) {
+            git restore $manifestPath
+        }
     }
 
     Pop-Location -StackName ResetManifest

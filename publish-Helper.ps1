@@ -1,5 +1,5 @@
 
-Write-Information -Message ("Loading {0} ..." -f ($PSCommandPath | Split-Path -LeafBase)) 
+Write-Information -MessageData ("Loading {0} ..." -f ($PSCommandPath | Split-Path -LeafBase))
 
 # This functionalty should be moved to TestingHelper module to allow a simple Publish.ps1 code.
 
@@ -48,7 +48,7 @@ function Invoke-PublishModuleToPSGallery{
 } Export-ModuleMember -Function Invoke-PublishModuleToPSGallery
 
 function Update-PublishModuleManifest {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory=$true)][string]$VersionTag
     )
@@ -59,7 +59,12 @@ function Update-PublishModuleManifest {
         Prerelease = Get-PublishModulePreRelease -VersionTag $VersionTag
     }
 
-    Update-ModuleManifest  @parameters   
+    # if ($PSCmdlet.ShouldProcess($parameters.Path, "Update-ModuleManifest with ModuleVersion:{0} Prerelease:{1}" -f $parameters.ModuleVersion, $parameters.Prerelease)) {
+    if ($PSCmdlet.ShouldProcess($parameters.Path, "Update-ModuleManifest with $versionTag")) {
+        "Updating module manifest with version tag [$VersionTag] ..." | Write-Information
+        Update-ModuleManifest  @parameters   
+        
+    }
 
     if($?){
         Write-Information -MessageData "Updated module manifest with version tag [$VersionTag]"
