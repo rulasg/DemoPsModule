@@ -37,11 +37,10 @@ function Invoke-PublishModuleToPSGallery{
         $ConfirmPreference = 'None'
     }
 
-    $message ="Publishing {0} {1} {2} to PSGallery ..." -f $($psd1.RootModule), $($psd1.ModuleVersion), $($psd1.PrivateData.pSData.Prerelease)  
-    $message | Write-Information
-
+    
     # Publish the module with ShouldProcess (-whatif, -confirm)
     if ($PSCmdlet.ShouldProcess($psdPath, "Publish-Module")) {
+        "Publishing {0} {1} {2} to PSGallery ..." -f $($psd1.RootModule), $($psd1.ModuleVersion), $($psd1.PrivateData.pSData.Prerelease) | Write-Information
         # During testing we should use -WhatIf paarmetre when calling for publish. 
         # Just reach this point when testing call failure
         Invoke-PublishModule -Name $psdPath -NuGetApiKey $NuGetApiKey -Force:$ForcePublish

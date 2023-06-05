@@ -78,6 +78,16 @@ function DemoPsModuleTest_Publish_WithKey{
     Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
 }
 
+function DemoPsModuleTest_Publish_WithKey_WhatIf{
+
+    & $publish_ps1 -NuGetApiKey "something" -WhatIf @PUBLISH_CALL_PARAMS 
+
+    Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
+
+    # Invoke-PublishModule should not be called
+    Assert-ContainsNotPattern -Expected "Publishing DemoPsModule.psm1*" -Presented $infoVar.MessageData
+}
+
 function DemoPsModuleTest_Publish_WithWrongKey_Injected{
 
     $hasThrow = $false
@@ -216,6 +226,25 @@ function Assert-ContainsPattern{
     }
 
     Assert-IsTrue -Condition $found -Comment "Not found pattern [$Expected] in $Presented"
+}
+
+function Assert-ContainsNotPattern{
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)] [string] $Expected,
+        [Parameter(Mandatory)] [string[]] $Presented,
+        [Parameter()] [string] $Comment
+    )
+
+    $found = $false
+    foreach($p in $Presented){
+        if ($p -like $Expected) {
+            $found = $true
+            break
+        }
+    }
+
+    Assert-IsFalse -Condition $found -Comment "Found pattern [$Expected] in $Presented"
 }
 
 function Assert-Manifest{
