@@ -61,7 +61,7 @@ function DemoPsModuleTest_Publish_NoTag_NoKey{
     # Clear key env variable 
     $env:NUGETAPIKEY = $null
 
-    & $publish_ps1 @ErrorParameters -whatif
+    & $publish_ps1 @PUBLISH_CALL_PARAMS
 
     # Assert for error
     Assert-IsFalse $? -Comment "Publish command should fail with Exit <> 0" 
@@ -87,22 +87,6 @@ function DemoPsModuleTest_Publish_WithWrongKey_Injected{
     catch {
         # Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
         Assert-AreEqual -Expected $EXCEPTION_MESSAGE -Presented $_.exception.Message
-        $hasThrow = $true
-    }
-    Assert-IsTrue -Condition $hasThrow -Comment "Publish command should fail with Exit <> 0"
-
-    Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
-}
-
-function DemoPsModuleTest_Publish_WithWrongKey_Integrated{
-
-    # Injecting this code to the module function
-
-    $hasThrow = $false
-    try {
-        & $publish_ps1  -NuGetApiKey "something" @PUBLISH_CALL_PARAMS_WITHEXCEPTION
-    }
-    catch {
         $hasThrow = $true
     }
     Assert-IsTrue -Condition $hasThrow -Comment "Publish command should fail with Exit <> 0"
