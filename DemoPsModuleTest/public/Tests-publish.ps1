@@ -11,6 +11,49 @@ $InfoParameters = @{
     InformationVar = 'infoVar'
 }
 
+$SCRITPBLOCK_WITHNOEXCEPTION = {
+        
+    function Invoke-PublishModule {
+        [CmdletBinding()]
+        param(
+            [Parameter(Mandatory=$true)][string]$Name,
+            [Parameter(Mandatory=$true)][string]$NuGetApiKey,
+            [Parameter(Mandatory=$false)][switch]$Force
+            )
+            
+        return 0
+    }
+}
+$EXCEPTION_MESSAGE = 'Some throw exception comming from Publish-Module Injection'
+$SCRITPBLOCK_WITHEXCEPTION = {
+        
+    function Invoke-PublishModule {
+        [CmdletBinding()]
+        param(
+            [Parameter(Mandatory=$true)][string]$Name,
+            [Parameter(Mandatory=$true)][string]$NuGetApiKey,
+            [Parameter(Mandatory=$false)][switch]$Force
+            )
+            
+        throw $EXCEPTION_MESSAGE
+    }
+}
+
+$PUBLISH_CALL_PARAMS = @{
+    ErrorAction = 'SilentlyContinue' 
+    ErrorVar = 'errorVar'
+    InformationAction = 'SilentlyContinue' 
+    InformationVar = 'infoVar'
+    DependencyInjection = $SCRITPBLOCK_WITHNOEXCEPTION
+}
+$PUBLISH_CALL_PARAMS_WITHEXCEPTION = @{
+    ErrorAction = 'SilentlyContinue' 
+    ErrorVar = 'errorVar'
+    InformationAction = 'SilentlyContinue' 
+    InformationVar = 'infoVar'
+    DependencyInjection = $SCRITPBLOCK_WITHEXCEPTION
+}
+
 function DemoPsModuleTest_Publish_NoTag_NoKey{
 
     # Fails due to lack of key as parameter of environment
@@ -29,7 +72,7 @@ function DemoPsModuleTest_Publish_NoTag_NoKey{
 
 function DemoPsModuleTest_Publish_WithKey{
 
-    & $publish_ps1 -NuGetApiKey "something" @InfoParameters -whatif
+    & $publish_ps1 -NuGetApiKey "something" @PUBLISH_CALL_PARAMS
 
     Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
     Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
@@ -37,32 +80,13 @@ function DemoPsModuleTest_Publish_WithKey{
 
 function DemoPsModuleTest_Publish_WithWrongKey_Injected{
 
-    # Injecting this code to the module function
-
-    $errorMessage ="some message"
-
-    $scriptblock = {
-        
-        function Invoke-PublishModule {
-            [CmdletBinding()]
-            param(
-                [Parameter(Mandatory=$true)][string]$Name,
-                [Parameter(Mandatory=$true)][string]$NuGetApiKey,
-                [Parameter(Mandatory=$false)][switch]$Force
-                )
-                
-            # throw "NuGetApiKey is not valid"
-            throw $errorMessage
-        }
-    }
-
     $hasThrow = $false
     try {
-        & $publish_ps1 -DependencyInjection $scriptblock  -NuGetApiKey "something" @InfoParameters @ErrorParameters
+        & $publish_ps1 -NuGetApiKey "something"  @PUBLISH_CALL_PARAMS_WITHEXCEPTION
     }
     catch {
         # Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
-        Assert-AreEqual -Expected $errorMessage -Presented $_.exception.Message
+        Assert-AreEqual -Expected $EXCEPTION_MESSAGE -Presented $_.exception.Message
         $hasThrow = $true
     }
     Assert-IsTrue -Condition $hasThrow -Comment "Publish command should fail with Exit <> 0"
@@ -76,11 +100,9 @@ function DemoPsModuleTest_Publish_WithWrongKey_Integrated{
 
     $hasThrow = $false
     try {
-        & $publish_ps1  -NuGetApiKey "something" @InfoParameters @ErrorParameters
+        & $publish_ps1  -NuGetApiKey "something" @PUBLISH_CALL_PARAMS_WITHEXCEPTION
     }
     catch {
-        # Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
-        # Assert-AreEqual -Expected $errorMessage -Presented $_.exception.Message
         $hasThrow = $true
     }
     Assert-IsTrue -Condition $hasThrow -Comment "Publish command should fail with Exit <> 0"
@@ -92,7 +114,7 @@ function DemoPsModuleTest_Publish_Key_InEnvironment{
 
     $Env:NUGETAPIKEY = "something"
 
-    & $publish_ps1 -NuGetApiKey "something" @InfoParameters -whatif
+    & $publish_ps1 -NuGetApiKey "something" @PUBLISH_CALL_PARAMS
     
     Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
 
@@ -109,7 +131,7 @@ function DemoPsModuleTest_Publish_With_VersionTag{
 
     $versionTag = '1.0.0-alpha'
 
-    & $publish_ps1 -VersionTag $versionTag @InfoParameters -whatif
+    & $publish_ps1 -VersionTag $versionTag @PUBLISH_CALL_PARAMS
 
     Assert-Manifest -Version "1.0.0" -Prerelease "alpha" -Comment "Valid version tag [$versionTag]"
 
@@ -117,22 +139,6 @@ function DemoPsModuleTest_Publish_With_VersionTag{
 }
 
 function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_Valid{
-
-    $errorMessage ="some message"
-
-    $scriptblock = {
-        
-        function Invoke-PublishModule {
-            [CmdletBinding()]
-            param(
-                [Parameter(Mandatory=$true)][string]$Name,
-                [Parameter(Mandatory=$true)][string]$NuGetApiKey,
-                [Parameter(Mandatory=$false)][switch]$Force
-                )
-                
-            return
-        }
-    }
     
     $Env:NUGETAPIKEY = "something"
 
@@ -159,7 +165,7 @@ function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_Valid{
         $ExpectedVersion = $versionTag.Split('-')[0] -replace '[a-zA-Z_]'
         $ExpectedPrerelease = $versionTag.Split('-')[1] ??[string]::Empty
         
-        & $publish_ps1 -VersionTag $versionTag -DependencyInjection $scriptblock @InfoParameters 
+        & $publish_ps1 -VersionTag $versionTag @PUBLISH_CALL_PARAMS
 
         Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
         Assert-Manifest -Version $ExpectedVersion -Prerelease $ExpectedPrerelease -Comment "Valid version tag [$versionTag]"
@@ -188,7 +194,7 @@ function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_NotValid{
     $NotValid + $NotValid3Parts| ForEach-Object {
         $versionTag = $_
  
-        & $publish_ps1 -VersionTag $versionTag @ErrorParameters @InfoParameters -whatif
+        & $publish_ps1 -VersionTag $versionTag @PUBLISH_CALL_PARAMS
         
         Assert-IsFalse -Condition $? -Comment "Publish command should fail with Exit <> 0"
         # Assert-ContainsPattern -Expected "Cannot process argument transformation on parameter 'ModuleVersion'.*" -Presented $errorVar.exception.Message

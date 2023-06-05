@@ -10,9 +10,12 @@ param(
 )
 
 # Load helper 
-# We Dot souce to allow all to be in the same scope as the sript
+# We dot souce the ps1 to allow all code to be in the same scope as the script
+# Easier to inject for testing with DependecyInjection parameter
 . ($PSScriptRoot | Join-Path -ChildPath "publish-Helper.ps1")
-if ($DependencyInjection) { . $DependencyInjection }
+if ($DependencyInjection) { 
+    . $DependencyInjection 
+}
 
 # Process Tag
 if($VersionTag){
