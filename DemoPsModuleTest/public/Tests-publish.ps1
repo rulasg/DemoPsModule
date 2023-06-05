@@ -2,15 +2,6 @@
 $publish_ps1 = $PSScriptRoot | Split-path -Parent | split-path -Parent | Join-Path -ChildPath 'publish.ps1'
 $manifestPath = $PSScriptRoot | Split-Path -Parent | Split-Path -Parent | Join-Path -ChildPath 'DemoPsModule.psd1'
 
-$ErrorParameters = @{
-    ErrorAction = 'SilentlyContinue' 
-    ErrorVar = 'errorVar'
-}
-$InfoParameters = @{
-    InformationAction = 'SilentlyContinue' 
-    InformationVar = 'infoVar'
-}
-
 $SCRITPBLOCK_WITHNOEXCEPTION = {
         
     function Invoke-PublishModule {
@@ -19,8 +10,10 @@ $SCRITPBLOCK_WITHNOEXCEPTION = {
             [Parameter(Mandatory=$true)][string]$Name,
             [Parameter(Mandatory=$true)][string]$NuGetApiKey,
             [Parameter(Mandatory=$false)][switch]$Force
-            )
-            
+        )
+        
+        "Invoke-PublishModule called with Name: $Name, NuGetApiKey: $NuGetApiKey, Force: $Force" | Write-Information
+        
         return 0
     }
 }
@@ -33,8 +26,10 @@ $SCRITPBLOCK_WITHEXCEPTION = {
             [Parameter(Mandatory=$true)][string]$Name,
             [Parameter(Mandatory=$true)][string]$NuGetApiKey,
             [Parameter(Mandatory=$false)][switch]$Force
-            )
-            
+        )
+        
+        "Invoke-PublishModule called With THROW with Name: $Name, NuGetApiKey: $NuGetApiKey, Force: $Force" | Write-Information
+
         throw $EXCEPTION_MESSAGE
     }
 }
@@ -205,7 +200,7 @@ function Assert-Publish_PS1_Invoke-PublishModule{
     param (
         [Parameter(Mandatory)][object] $Presented
     )
-    Assert-ContainsPattern -Expected "Publishing DemoPsModule.psm1*" -Presented $infoVar.MessageData
+    Assert-ContainsPattern -Expected "Publishing DemoPsModule.psm1*" -Presented $Presented.MessageData
 
 }
 
