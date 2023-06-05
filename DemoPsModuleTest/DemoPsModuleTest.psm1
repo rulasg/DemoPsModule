@@ -30,5 +30,3 @@ Foreach($import in @($Public + $Private))
         Write-Error -Message "Failed to import function $($import.fullname): $_"
     }
 }
-
-Export-ModuleMember -Function DemoPsModuleTest_*

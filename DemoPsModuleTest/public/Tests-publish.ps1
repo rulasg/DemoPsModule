@@ -68,7 +68,7 @@ function DemoPsModuleTest_Publish_NoTag_NoKey{
     Assert-AreEqual -Expected 1 -Presented $LASTEXITCODE
     Assert-Count -Expected 1 -Presented $errorVar
     Assert-IsTrue -Condition ($errorVar[0].exception.Message.Contains('$Env:NUGETAPIKEY is not set.') )
-}
+} Export-ModuleMember -Function DemoPsModuleTest_Publish_NoTag_NoKey
 
 function DemoPsModuleTest_Publish_WithKey{
 
@@ -76,7 +76,7 @@ function DemoPsModuleTest_Publish_WithKey{
 
     Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
     Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
-}
+} Export-ModuleMember -Function DemoPsModuleTest_Publish_WithKey
 
 function DemoPsModuleTest_Publish_WithKey_WhatIf{
 
@@ -86,7 +86,7 @@ function DemoPsModuleTest_Publish_WithKey_WhatIf{
 
     # Invoke-PublishModule should not be called
     Assert-ContainsNotPattern -Expected "Publishing DemoPsModule.psm1*" -Presented $infoVar.MessageData
-}
+} Export-ModuleMember -Function DemoPsModuleTest_Publish_WithKey_WhatIf
 
 function DemoPsModuleTest_Publish_WithWrongKey_Injected{
 
@@ -102,7 +102,7 @@ function DemoPsModuleTest_Publish_WithWrongKey_Injected{
     Assert-IsTrue -Condition $hasThrow -Comment "Publish command should fail with Exit <> 0"
 
     Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
-}
+} Export-ModuleMember -Function DemoPsModuleTest_Publish_WithWrongKey_Injected
 
 function DemoPsModuleTest_Publish_Key_InEnvironment{
 
@@ -113,7 +113,7 @@ function DemoPsModuleTest_Publish_Key_InEnvironment{
     Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
 
     Assert-Publish_PS1_Invoke-PublishModule -Presented $infoVar
-}
+} Export-ModuleMember -Function DemoPsModuleTest_Publish_Key_InEnvironment
 
 function DemoPsModuleTest_Publish_With_VersionTag{
 
@@ -130,7 +130,7 @@ function DemoPsModuleTest_Publish_With_VersionTag{
     Assert-Manifest -Version "1.0.0" -Prerelease "alpha" -Comment "Valid version tag [$versionTag]"
 
     Reset-Manifest
-}
+} Export-ModuleMember -Function DemoPsModuleTest_Publish_With_VersionTag
 
 function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_Valid{
     
@@ -166,7 +166,7 @@ function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_Valid{
 
         Reset-Manifest
     }
-}
+} Export-ModuleMember -Function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_Valid
 
 function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_NotValid{
 
@@ -198,7 +198,7 @@ function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_NotValid{
         Reset-Manifest
     }
 
-}
+}  Export-ModuleMember -Function DemoPsModuleTest_Publish_With_VersionTag_FormatVersion_NotValid
 
 function Assert-Publish_PS1_Invoke-PublishModule{
     [CmdletBinding()]
