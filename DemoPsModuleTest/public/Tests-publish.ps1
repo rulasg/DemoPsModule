@@ -80,7 +80,7 @@ function DemoPsModuleTest_Publish_WithKey_WhatIf{
     Assert-IsTrue $? -Comment "Publish command should success with Exit <> 0" 
 
     # Invoke-PublishModule should not be called
-    Assert-ContainsNotPattern -Expected "Publishing DemoPsModule.psm1*" -Presented $infoVar.MessageData
+    Assert-ContainsNotPattern -Expected "Publishing *" -Presented $infoVar.MessageData
 } Export-ModuleMember -Function DemoPsModuleTest_Publish_WithKey_WhatIf
 
 function DemoPsModuleTest_Publish_WithWrongKey_Injected{
