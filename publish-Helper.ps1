@@ -36,7 +36,6 @@ function Invoke-PublishModuleToPSGallery{
     if ($Force -and -not $Confirm){
         $ConfirmPreference = 'None'
     }
-
     
     # Publish the module with ShouldProcess (-whatif, -confirm)
     if ($PSCmdlet.ShouldProcess($psdPath, "Publish-Module")) {
@@ -45,7 +44,7 @@ function Invoke-PublishModuleToPSGallery{
         # Just reach this point when testing call failure
         Invoke-PublishModule -Name $psdPath -NuGetApiKey $NuGetApiKey -Force:$ForcePublish
     }
-} Export-ModuleMember -Function Invoke-PublishModuleToPSGallery
+}
 
 function Update-PublishModuleManifest {
     [CmdletBinding(SupportsShouldProcess)]
@@ -64,6 +63,8 @@ function Update-PublishModuleManifest {
         "Updating module manifest with version tag [$VersionTag] ..." | Write-Information
         Update-ModuleManifest  @parameters   
         
+    } else {
+        Write-Warning -Message "Update-ModuleManifest skipped. Any PSD1 publish will not have the proper version."
     }
 
     if($?){
@@ -73,7 +74,7 @@ function Update-PublishModuleManifest {
         Write-Error -Message "Failed to update module manifest with version tag [$VersionTag]"
         exit 1
     }
-} Export-ModuleMember -Function Update-PublishModuleManifest
+} 
 
 function Invoke-PublishModule {
     [CmdletBinding()]
