@@ -18,30 +18,48 @@ DETAILED DESCRIPTION
 
     Module folder structure
     /ModuleName/
-        Manifest    - DemoPsModule.psd1
-
-        Module      - public
-                    - publicFunctions.ps1
-                    - private
-                    - privateFunctions.ps1
-                    - privateFunctions2.ps1
+        Module      - DemoPsModule.psd1
                     - DemoPsModule.psm1
+                    - public
+                        - publicFunctions.ps1
+                    - private
+                        - privateFunctions.ps1
 
         Testing     - DemoPsModuleTest
-                    - private
                         - DemoPsModuleTest.psd1
                         - DemoPsModuleTest.psm1
-                    - test.ps1
-                    - .vscode
-                    - launch.json
+                            - private
+                            - public
+                               - publicFunctions.Tests.ps1
+                        - test.ps1
+                        - .vscode
+                            - launch.json
 
-        Publish     - publish.ps1
+        Deploy      - deploy.ps1
+                    - deploy-helper.ps1
+        
+        Sync        - sync.ps1
+                    - sync-helper.ps1
+
+        DevCont     - .devcontainer
+                        - devcontainer.json
+
+        Release     - release.ps1
+                    - release-helper.ps1        
 
         About       - en-US
-                    - about_DemoPsModule.help.txt
+                        - about_DemoPsModule.help.txt
 
         License     - LICENSE
         ReadMe      - README.md
+
+        Workflows   - .github
+                    - workflows
+                        - powershell.yml
+                        - deploy_module.yml
+                        - test_with_TestingHelper.yml
+
+
 
 
     
